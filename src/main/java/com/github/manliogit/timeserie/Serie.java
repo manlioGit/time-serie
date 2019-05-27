@@ -3,7 +3,7 @@ package com.github.manliogit.timeserie;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.manliogit.timeserie.smooth.MovingMedian;
+import com.github.manliogit.timeserie.smooth.MovingAverage;
 import com.github.manliogit.timeserie.smooth.Smooth;
 
 public class Serie {
@@ -24,7 +24,7 @@ public class Serie {
 		_serie = serie;
 		_order = m;
 		_decomposition = decomposition;
-		_smooth = new MovingMedian(m, serie);
+		_smooth = new MovingAverage(m, serie);
 	}
 
 	public List<Double> trend() {
