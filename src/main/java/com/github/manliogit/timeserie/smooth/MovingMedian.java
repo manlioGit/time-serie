@@ -1,23 +1,14 @@
 package com.github.manliogit.timeserie.smooth;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class MovingMedian implements Smooth{
 
-	private int _order;
-	private List<Double> _serie;
+	private final int _order;
+	private final List<Double> _serie;
 
-	public MovingMedian(int order) {
-		_order = order;
-	}
-	
-	public MovingMedian(int order, Double...serie) {
-		this(order, Arrays.asList(serie));
-	}
-	
 	public MovingMedian(int order, List<Double> serie) {
 		_serie = serie;
 		_order = order;
@@ -42,19 +33,4 @@ public class MovingMedian implements Smooth{
 		}
 		return _order % 2 == 0 ? centered : smoothed;
 	}
-
-//	public List<Double> seasonal(List<Double> y) {
-//		trend(y);
-//		return null;
-//	}
-//
-//	public List<Double> detrend(List<Double> y) {
-//		List<Double> trend = trend(y);
-//		List<Double> detrend = new ArrayList<Double>();
-//		for (int i = _order/2; i < trend.size(); i++) {
-//			detrend.add(y.get(i) / trend.get(i - _order/2));    //consider additionalty
-//		}
-//		
-//		return detrend;
-//	}
 }

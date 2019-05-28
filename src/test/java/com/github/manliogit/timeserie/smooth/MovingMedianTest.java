@@ -25,12 +25,4 @@ public class MovingMedianTest {
 							    
 		assertThat(new MovingMedian(4, y).trend(), closeTo(expectedMM, 0.0001));
 	}
-	
-//	@Test
-//	public void deseasonalAdditive() throws Exception {
-//		List<Double> y = asList(50.,61.,73.,84.,59.,72.,89.,100.,72.,93.,110.,126.,80.,100.,123.,140.);
-//		List<Double> expectedSeasonal = asList(1.07,1.19,0.8,0.92,1.09,1.16,0.79,0.96,1.09,1.22,0.76,0.92);
-//		
-//		assertThat(new MovingMedian(4).detrend(y), closeTo(expectedSeasonal, 0.0001));
-//	}
 }

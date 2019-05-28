@@ -17,12 +17,15 @@ public class ListMatcher extends BaseMatcher<List<Double>> {
 	
 	@Override
 	public boolean matches(Object other) {
-		for (int i = 0; i < _list.size(); i++) {
-			if(Math.abs(_list.get(i) - ((List<Double>)other).get(i)) > _delta) {
-				return false;
+		if(_list.size() == ((List<Double>)other).size()) {
+			for (int i = 0; i < _list.size(); i++) {
+				if(Math.abs(_list.get(i) - ((List<Double>)other).get(i)) > _delta) {
+					return false;
+				}
 			}
+			return true;
 		}
-		return _list.size() == ((List<Double>)other).size();
+		return false;
 	}
 
 	@Override

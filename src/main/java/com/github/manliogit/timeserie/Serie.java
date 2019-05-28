@@ -4,29 +4,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.manliogit.timeserie.smooth.MovingAverage;
+import com.github.manliogit.timeserie.smooth.MovingMedian;
 import com.github.manliogit.timeserie.smooth.Smooth;
 
 public class Serie {
 
-	public enum DECOMPOSITION {ADDITIVE, MULTIPLICATIVE}
+	private enum DECOMPOSITION {ADDITIVE, MULTIPLICATIVE}
 	
 	private final List<Double> _serie;
-
-	private int _order;
+	private final int _order;
+	
 	private DECOMPOSITION _decomposition;
 	private Smooth _smooth;
 	
 	public Serie(List<Double> serie, int m) {
-		this(serie, m, DECOMPOSITION.ADDITIVE);
-	}
-	
-	public Serie(List<Double> serie, int m, DECOMPOSITION decomposition) {
 		_serie = serie;
 		_order = m;
-		_decomposition = decomposition;
+		_decomposition = DECOMPOSITION.ADDITIVE;
 		_smooth = new MovingAverage(m, serie);
 	}
+	
+	public Serie additive() {
+		_decomposition = DECOMPOSITION.ADDITIVE;
+		return this;
+	}
+	
+	public Serie multiplicative() {
+		_decomposition = DECOMPOSITION.MULTIPLICATIVE;
+		return this;
+	}
 
+	public Serie smoothWithMedian() {
+		_smooth = new MovingMedian(_order, _serie);
+		return this;
+	}
+	
+	public Serie smoothWithAverage() {
+		_smooth = new MovingAverage(_order, _serie);
+		return this;
+	}
+	
 	public List<Double> trend() {
 		return _smooth.trend();
 	}
@@ -61,8 +78,13 @@ public class Serie {
 		List<Double> trend = trend();
 		List<Double> season = season();
 		
-		for (int i = _order/2, t = _order/2; i < _serie.size() - _order/2; i++, t = (t + 1) % _order) {
-			residual.add(op(_serie.get(i), season.get(t), trend.get(i - _order/2)));
+		for (int i = _order/2,   t = _order/2; 
+				 i < _serie.size() - _order/2; 
+				 i++,  t = (t + 1) % _order   ) {
+			
+			residual.add(
+					op(_serie.get(i), season.get(t), trend.get(i - _order/2))
+				);
 		}
 		
 		return residual;

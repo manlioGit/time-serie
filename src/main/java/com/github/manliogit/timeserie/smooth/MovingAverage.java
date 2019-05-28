@@ -1,17 +1,12 @@
 package com.github.manliogit.timeserie.smooth;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MovingAverage implements Smooth {
 
-	private List<Double> _serie;
-	private int _order;
-
-	public MovingAverage(int order, Double...serie) {
-		this(order, Arrays.asList(serie));
-	}
+	private final List<Double> _serie;
+	private final int _order;
 	
 	public MovingAverage(int order, List<Double> serie) {
 		_serie = serie;
