@@ -61,7 +61,9 @@ public class Serie {
 	public List<Double> season() {
 		List<Double> detrend = detrend();
 		List<Double> seasonality = new ArrayList<Double>();
-		for (int i = _order/2, t = 0; t < _order ; i = (i + 1) % _order, t++) {
+		int start = _order % 2 == 0 ? _order/2 : _order/2 + 1;
+		
+		for (int i = start, t = 0; t < _order ; i = (i + 1) % _order, t++) {
 			
 			double season = detrend.get(i);
 			for(int k = i + _order; k < detrend.size(); k+=_order) {
