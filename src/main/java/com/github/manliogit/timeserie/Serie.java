@@ -1,5 +1,8 @@
 package com.github.manliogit.timeserie;
 
+import static com.github.manliogit.timeserie.util.Statistic.mean;
+import static com.github.manliogit.timeserie.util.Statistic.sd;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,12 +64,13 @@ public class Serie {
 	public List<Double> season() {
 		List<Double> detrend = detrend();
 		List<Double> seasonality = new ArrayList<Double>();
-		int start = _order % 2 == 0 ? _order/2 : _order/2 + 1;
 		
-		for (int i = start, t = 0; t < _order ; i = (i + 1) % _order, t++) {
+		for (int t = 0, i = _order / 2 + _order % 2; 
+			     t < _order; 
+				 t++,   i =   (i + 1)  % _order ) {
 			
 			double season = detrend.get(i);
-			for(int k = i + _order; k < detrend.size(); k+=_order) {
+			for(int k = i + _order; k < detrend.size(); k += _order) {
 				season += detrend.get(k);
 			}
 			seasonality.add(season / (detrend.size() / _order));
@@ -102,5 +106,20 @@ public class Serie {
 		return _decomposition == DECOMPOSITION.ADDITIVE
 				? a -  b - c
 				: a / (b * c);		
+	}
+
+	public List<Double> anomalies(List<Double> observation) {
+		List<Double> residual = residual();
+		double min = mean(residual) - 3 * sd(residual);
+		double max = mean(residual) + 3 * sd(residual);
+		
+		List<Double> anomalies = new ArrayList<Double>();
+		for (Double o : observation) {
+			if(o > max || o < min) {
+				anomalies.add(o);
+			}
+		}
+		
+		return anomalies;
 	}
 }

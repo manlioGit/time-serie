@@ -1,4 +1,4 @@
-package com.github.manliogit.stat.util;
+package com.github.manliogit.timeserie.util;
 
 import java.util.List;
 

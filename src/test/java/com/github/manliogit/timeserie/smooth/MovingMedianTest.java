@@ -1,6 +1,6 @@
 package com.github.manliogit.timeserie.smooth;
 
-import static com.github.manliogit.stat.util.ListMatcher.closeTo;
+import static com.github.manliogit.timeserie.util.ListMatcher.closeTo;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
