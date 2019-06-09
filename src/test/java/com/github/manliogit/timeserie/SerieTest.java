@@ -167,7 +167,7 @@ public class SerieTest {
 	public void anomalyDetectionWithMovingAverageDecomposotion() throws Exception {
 		List<Double> z = z();
 		
-		z.addAll(asList(64.,76.,0.,99.));
+		z.addAll(asList(64.,76.,88.,0.));
 		
 		assertThat(new Serie(z, 4).isLastObservationAnomalous(), is(true));
 	}
@@ -182,22 +182,41 @@ public class SerieTest {
 	}
 	
 	@Test
+	public void noMoreAnomaliesWithMovingAverageDecomposotion() throws Exception {
+		List<Double> z = z();
+		
+		z.addAll(asList(64.,76.,88.,0.));
+		z.addAll(asList(69.,81.,93.,104.));
+		
+		assertThat(new Serie(z, 4).isLastObservationAnomalous(), is(false));
+	}
+	
+	@Test
 	public void anomalyDetectionWithMovingMedianDecomposotion() throws Exception {
 		List<Double> z = z();
 		
-		z.add(700.);
+		z.addAll(asList(64.,76.,88.,0.));
 		
 		assertThat(new Serie(z, 4).smoothWithMedian().isLastObservationAnomalous(), is(true));
 	}
-
+	
 	@Test
-	public void anomalyDetectionWithMovingAverageDecomposotionNoMoreAnomalies() throws Exception {
-		List<Double> y = new ArrayList<>(y());
+	public void noAnomalyDetectionWithMovingMedianDecomposotion() throws Exception {
+		List<Double> z = z();
+
+		z.addAll(asList(64.,76.,88.,99.));
 		
-		y.add(700.);
-		y.add(mean(y()));
+		assertThat(new Serie(z, 4).smoothWithMedian().isLastObservationAnomalous(), is(false));
+	}
+	
+	@Test
+	public void noMoreAnomaliesWithMovingMedianDecomposotion() throws Exception {
+		List<Double> z = z();
 		
-		assertThat(new Serie(y, 4).isLastObservationAnomalous(), is(false));
+		z.addAll(asList(64.,76.,88.,0.));
+		z.addAll(asList(69.,81.,93.,104.));
+		
+		assertThat(new Serie(z, 4).smoothWithMedian().isLastObservationAnomalous(), is(false));
 	}
 	
 	private List<Double> y() {
@@ -205,7 +224,7 @@ public class SerieTest {
 	}
 	
 	private ArrayList<Double> z() {
-		return new ArrayList<>(asList(50.,61.,73.,84., 50.,61.,73.,84., 50.,61.,73.,84.));
+		return new ArrayList<>(asList(50.,61.,73.,84., 55.,66.,78.,89., 59.,71.,83.,94.));
 	}
 	
 	private List<Double> webTraffic() {

@@ -124,7 +124,7 @@ public class Serie {
 		double min = mean(filtered) - 3 * sd(filtered);
 		double max = mean(filtered) + 3 * sd(filtered);
 
-		for (int i = residual.size() - _order; i < residual.size(); i++) {
+		for (int i = residual.size() - _order / 2; i < residual.size(); i++) {
 			double observation = residual.get(i); 
 			if(observation > max || observation < min) {
 				return true;
