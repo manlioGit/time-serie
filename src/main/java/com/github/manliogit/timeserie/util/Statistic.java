@@ -6,50 +6,45 @@ import java.util.List;
 
 public class Statistic {
 
-	public static Double mean(List<Double> d) {
-		return summationOn(new Action() {
-			@Override
-			public double on(double e) {
-				return e;
-			}
-		}, d);
+	public static double mean(List<Double> d) {
+		return sum(d) / d.size();
 	}
 	
-	public static Double mean(Double...d) {
+	public static double mean(Double...d) {
 		return mean(asList(d));
 	}
 
-	public static Double var(List<Double> d) {
-		final double mean = mean(d);
-		return summationOn(new Action() {
-			@Override
-			public double on(double e) {
-				return Math.pow(e - mean, 2.);
-			}
-		}, d);
-	}
-	
-	public static Double var(Double...d) {
-		return var(asList(d));
-	}
-	
-	public static Double sd(List<Double> d) {
-		return Math.sqrt(var(d));
-	}
-	
-	public static Double sd(Double...d) {
-		return sd(asList(d));
-	}
-	
-	private static double summationOn(Action a, List<Double> d) {
+	public static double var(List<Double> d) {
+		double mean = mean(d);
 		double sum = 0.;
 		for (double e : d) {
-			sum += a.on(e);
+			sum += Math.pow(e - mean, 2.);
 		}
 		return sum / d.size();
 	}
 	
-	private interface Action {
-		double on(double e);
+	public static double var(Double...d) {
+		return var(asList(d));
+	}
+	
+	public static double sd(List<Double> d) {
+		return Math.sqrt(var(d));
+	}
+	
+	public static double sd(Double...d) {
+		return sd(asList(d));
+	}
+	
+	public static double sum(List<Double> d) {
+		double sum = 0.;
+		for (double e : d) {
+			sum += e;
+		}
+		
+		return sum;
+	}
+	
+	public static double sum(Double...d) {
+		return sum(asList(d));
 	}
 }

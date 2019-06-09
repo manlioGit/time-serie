@@ -9,6 +9,7 @@ import java.util.List;
 import com.github.manliogit.timeserie.smooth.MovingAverage;
 import com.github.manliogit.timeserie.smooth.MovingMedian;
 import com.github.manliogit.timeserie.smooth.Smooth;
+import com.github.manliogit.timeserie.util.Statistic;
 
 public class Serie {
 
@@ -21,7 +22,7 @@ public class Serie {
 	private Smooth _smooth;
 	
 	public Serie(List<Double> serie, int m) {
-		_serie = serie;
+		_serie = new ArrayList<>(serie);
 		_order = m;
 		_decomposition = DECOMPOSITION.ADDITIVE;
 		_smooth = new MovingAverage(m, serie);
@@ -73,10 +74,17 @@ public class Serie {
 			for(int k = i + _order; k < detrend.size(); k += _order) {
 				season += detrend.get(k);
 			}
-			seasonality.add(season / (detrend.size() / _order));
+			seasonality.add( season / (detrend.size() / _order) );
+//			seasonality.add( season / _order );
 		}
 
-		return seasonality;
+		double adjustment = Statistic.sum(seasonality) / _order;
+		List<Double> adjusted = new ArrayList<>();
+		for (Double s : seasonality) {
+			adjusted.add( op(s, adjustment) );
+		}
+		
+		return adjusted;
 	}
 
 	public List<Double> residual() {
@@ -108,18 +116,20 @@ public class Serie {
 				: a / (b * c);		
 	}
 
-	public List<Double> anomalies(List<Double> observation) {
-		List<Double> residual = residual();
-		double min = mean(residual) - 3 * sd(residual);
-		double max = mean(residual) + 3 * sd(residual);
+	public boolean isLastObservationAnomalous() {
 		
-		List<Double> anomalies = new ArrayList<Double>();
-		for (Double o : observation) {
-			if(o > max || o < min) {
-				anomalies.add(o);
+		List<Double> residual = residual();
+		List<Double> filtered = new MovingMedian(3, residual).trend();
+		
+		double min = mean(filtered) - 3 * sd(filtered);
+		double max = mean(filtered) + 3 * sd(filtered);
+
+		for (int i = residual.size() - _order; i < residual.size(); i++) {
+			double observation = residual.get(i); 
+			if(observation > max || observation < min) {
+				return true;
 			}
 		}
-		
-		return anomalies;
+		return false;
 	}
 }

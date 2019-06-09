@@ -33,7 +33,7 @@ public class ListMatcher extends BaseMatcher<List<Double>> {
 		arg0.appendText(_list.toString());
 	}
 	
-	public static BaseMatcher<List<Double>> closeTo(List<Double> list, double delta){
+	public static BaseMatcher<List<Double>> deltaEqual(List<Double> list, double delta){
 		return new ListMatcher(list, delta);
 	}
 }

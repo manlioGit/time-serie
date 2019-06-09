@@ -19,4 +19,4 @@ trucks 5 4 5
  plot(c(2,3,4),trucks, type="l", col="blue", xlab="trend",ylab="y",xlim=c(1,5), ylim=c(0,12))
 
  
- 
+ paste(formattable(as.numeric(c(1:10)), digits=4, format="f"), collapse=",")
