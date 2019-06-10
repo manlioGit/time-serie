@@ -9,6 +9,8 @@ Additive and multiplicative models are supported. Default is additive. Following
 
 ## additive
 
+![robust ausbeer](img/plot-ausbeer-median-robust.png)
+
 ## multiplicative
 
 

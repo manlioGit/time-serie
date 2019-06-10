@@ -20,6 +20,7 @@ public class Serie {
 	
 	private DECOMPOSITION _decomposition;
 	private Smooth _smooth;
+	private boolean _robust;
 	
 	public Serie(List<Double> serie, int m) {
 		_serie = new ArrayList<>(serie);
@@ -45,6 +46,11 @@ public class Serie {
 	
 	public Serie smoothWithAverage() {
 		_smooth = new MovingAverage(_serie, _order);
+		return this;
+	}
+	
+	public Serie robust() {
+		_robust = true;
 		return this;
 	}
 	
@@ -103,20 +109,35 @@ public class Serie {
 		return residual;
 	}
 	
+	public List<Double> anomalies() {
+		return anomalies(0, residual());
+	}
+	
 	public boolean isLastObservationAtypical() {
-		
 		List<Double> residual = residual();
+		return !anomalies(residual.size() - start(), residual).isEmpty();
+	}
+	
+	private List<Double> anomalies(int start, List<Double> residual){
+		List<Double> filter = robustness(residual);
 		
-		double min = mean(residual) - 3 * sd(residual);
-		double max = mean(residual) + 3 * sd(residual);
-
-		for (int i = residual.size() - start(); i < residual.size(); i++) {
+		double min = mean(filter) - 3 * sd(filter);
+		double max = mean(filter) + 3 * sd(filter);
+		
+		List<Double> anomalies = new ArrayList<Double>();
+		for (int i = start; i < residual.size(); i++) {
 			double observation = residual.get(i); 
 			if(observation > max || observation < min) {
-				return true;
+				anomalies.add(observation);
 			}
 		}
-		return false;
+		return anomalies;
+	}
+	
+	private List<Double> robustness(List<Double> residual){
+		return _robust 
+				? new MovingMedian(residual, 3).trend()
+				: residual;
 	}
 	
 	private int start() {
