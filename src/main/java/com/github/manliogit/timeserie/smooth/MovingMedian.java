@@ -9,7 +9,7 @@ public class MovingMedian implements Smooth{
 	private final int _order;
 	private final List<Double> _serie;
 
-	public MovingMedian(int order, List<Double> serie) {
+	public MovingMedian(List<Double> serie, int order) {
 		_serie = serie;
 		_order = order;
 	}

@@ -1,7 +1,6 @@
 package com.github.manliogit.timeserie;
 
 import static com.github.manliogit.timeserie.util.ListMatcher.deltaEqual;
-import static com.github.manliogit.timeserie.util.Statistic.mean;
 import static com.github.manliogit.timeserie.util.Statistic.sum;
 import static java.util.Arrays.asList;
 import static org.hamcrest.core.Is.is;
@@ -68,6 +67,80 @@ public class SerieTest {
 		List<Double> expectedResidual = asList(0.9896400024297665, 0.9978912049559723, 1.0200760588178088, 0.989268551319404, 1.006995915959131, 0.9770023754074381, 1.0108977222350162, 1.027513469540515, 1.0033640816111027, 1.0251064196365898, 0.9690262189471752, 0.9832179791400806);
 		
 		assertThat(new Serie(y(), 4).multiplicative().residual(), deltaEqual(expectedResidual, 0.01));
+	}
+	
+	@Test
+	public void anomalyDetectionWithMovingAverageDecomposition() {
+		List<Double> a = z();
+		List<Double> b = z();
+		List<Double> c = z();
+		List<Double> d = z();
+		
+		a.addAll(asList( 50., 61., 73.,-10.));
+		b.addAll(asList( 50., 61.,-10., 84.));
+		c.addAll(asList( 50.,-10., 73., 84.));
+		d.addAll(asList(-10., 61., 73., 84.));
+		
+		assertThat(new Serie(a, 4).isLastObservationAtypical(), is(true));
+		assertThat(new Serie(b, 4).isLastObservationAtypical(), is(true));
+		assertThat(new Serie(c, 4).isLastObservationAtypical(), is(true));
+		assertThat(new Serie(d, 4).isLastObservationAtypical(), is(true));
+	}
+	
+	@Test
+	public void noAnomalyDetectionWithMovingAverageDecomposition() {
+		List<Double> z = z();
+
+		z.addAll(asList(50.,61.,73.,84.));
+		
+		assertThat(new Serie(z, 4).isLastObservationAtypical(), is(false));
+	}
+	
+	@Test
+	public void noMoreAnomaliesWithMovingAverageDecomposition() {
+		List<Double> z = z();
+		
+		z.addAll(asList(50.,61.,73.,-10.));
+		z.addAll(asList(59.,72.,89.,100.));
+		
+		assertThat(new Serie(z, 4).isLastObservationAtypical(), is(false));
+	}
+	
+	@Test
+	public void anomalyDetectionWithMovingMedianDecomposition() {
+		List<Double> a = z();
+		List<Double> b = z();
+		List<Double> c = z();
+		List<Double> d = z();
+		
+		a.addAll(asList(50.,61.,73.,0.));
+		b.addAll(asList(50.,61.,0.,84.));
+		c.addAll(asList(50.,0.,73.,84.));
+		d.addAll(asList(0.,61.,73.,84.));
+		
+		assertThat(new Serie(a, 4).smoothWithMedian().isLastObservationAtypical(), is(true));
+		assertThat(new Serie(b, 4).smoothWithMedian().isLastObservationAtypical(), is(true));
+		assertThat(new Serie(c, 4).smoothWithMedian().isLastObservationAtypical(), is(true));
+		assertThat(new Serie(d, 4).smoothWithMedian().isLastObservationAtypical(), is(true));
+	}
+	
+	@Test
+	public void noAnomalyDetectionWithMovingMedianDecomposition()  {
+		List<Double> z = z();
+
+		z.addAll(asList(50.,61.,73.,84.));
+		
+		assertThat(new Serie(z, 4).smoothWithMedian().isLastObservationAtypical(), is(false));
+	}
+	
+	@Test
+	public void noMoreAnomaliesWithMovingMedianDecomposition() {
+		List<Double> z = z();
+		
+		z.addAll(asList(50.,61.,73.,0.));
+		z.addAll(asList(55.,66.,78.,89.));
+		
+		assertThat(new Serie(z, 4).smoothWithMedian().isLastObservationAtypical(), is(false));
 	}
 	
 	/***
@@ -159,64 +232,8 @@ public class SerieTest {
 		assertThat(serie.trend(),    deltaEqual(expectedMM, 0.0001));
 		assertThat(serie.detrend(),  deltaEqual(expectedDetrend, 0.0001));
 		assertThat(sum(serie.season()), closeTo(7., 0.01));
-		assertThat(serie.season(),   deltaEqual(expectedSeason, 0.1));
-		assertThat(serie.residual(), deltaEqual(expectedResidual, 0.1));
-	}
-	
-	@Test
-	public void anomalyDetectionWithMovingAverageDecomposotion() throws Exception {
-		List<Double> z = z();
-		
-		z.addAll(asList(64.,76.,88.,0.));
-		
-		assertThat(new Serie(z, 4).isLastObservationAnomalous(), is(true));
-	}
-	
-	@Test
-	public void noAnomalyDetectionWithMovingAverageDecomposotion() throws Exception {
-		List<Double> z = z();
-
-		z.addAll(asList(64.,76.,88.,99.));
-		
-		assertThat(new Serie(z, 4).isLastObservationAnomalous(), is(false));
-	}
-	
-	@Test
-	public void noMoreAnomaliesWithMovingAverageDecomposotion() throws Exception {
-		List<Double> z = z();
-		
-		z.addAll(asList(64.,76.,88.,0.));
-		z.addAll(asList(69.,81.,93.,104.));
-		
-		assertThat(new Serie(z, 4).isLastObservationAnomalous(), is(false));
-	}
-	
-	@Test
-	public void anomalyDetectionWithMovingMedianDecomposotion() throws Exception {
-		List<Double> z = z();
-		
-		z.addAll(asList(64.,76.,88.,0.));
-		
-		assertThat(new Serie(z, 4).smoothWithMedian().isLastObservationAnomalous(), is(true));
-	}
-	
-	@Test
-	public void noAnomalyDetectionWithMovingMedianDecomposotion() throws Exception {
-		List<Double> z = z();
-
-		z.addAll(asList(64.,76.,88.,99.));
-		
-		assertThat(new Serie(z, 4).smoothWithMedian().isLastObservationAnomalous(), is(false));
-	}
-	
-	@Test
-	public void noMoreAnomaliesWithMovingMedianDecomposotion() throws Exception {
-		List<Double> z = z();
-		
-		z.addAll(asList(64.,76.,88.,0.));
-		z.addAll(asList(69.,81.,93.,104.));
-		
-		assertThat(new Serie(z, 4).smoothWithMedian().isLastObservationAnomalous(), is(false));
+		assertThat(serie.season(),   deltaEqual(expectedSeason, 0.0123));
+		assertThat(serie.residual(), deltaEqual(expectedResidual, 0.0562));
 	}
 	
 	private List<Double> y() {
@@ -224,7 +241,11 @@ public class SerieTest {
 	}
 	
 	private ArrayList<Double> z() {
-		return new ArrayList<>(asList(50.,61.,73.,84., 55.,66.,78.,89., 59.,71.,83.,94.));
+		return new ArrayList<>(asList(
+				50.,61.,73.,84., 55.,66.,78.,89., 59.,71.,83.,94., 64.,76.,88.,99.,
+				50.,61.,73.,84., 55.,66.,78.,89., 59.,71.,83.,94., 64.,76.,88.,99.,
+				50.,61.,73.,84., 55.,66.,78.,89., 59.,71.,83.,94., 64.,76.,88.,99.
+			   ));
 	}
 	
 	private List<Double> webTraffic() {

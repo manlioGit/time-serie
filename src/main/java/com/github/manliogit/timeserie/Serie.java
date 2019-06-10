@@ -2,6 +2,7 @@ package com.github.manliogit.timeserie;
 
 import static com.github.manliogit.timeserie.util.Statistic.mean;
 import static com.github.manliogit.timeserie.util.Statistic.sd;
+import static com.github.manliogit.timeserie.util.Statistic.sum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,6 @@ import java.util.List;
 import com.github.manliogit.timeserie.smooth.MovingAverage;
 import com.github.manliogit.timeserie.smooth.MovingMedian;
 import com.github.manliogit.timeserie.smooth.Smooth;
-import com.github.manliogit.timeserie.util.Statistic;
 
 public class Serie {
 
@@ -25,7 +25,7 @@ public class Serie {
 		_serie = new ArrayList<>(serie);
 		_order = m;
 		_decomposition = DECOMPOSITION.ADDITIVE;
-		_smooth = new MovingAverage(m, serie);
+		_smooth = new MovingAverage(serie, m);
 	}
 	
 	public Serie additive() {
@@ -39,12 +39,12 @@ public class Serie {
 	}
 
 	public Serie smoothWithMedian() {
-		_smooth = new MovingMedian(_order, _serie);
+		_smooth = new MovingMedian(_serie, _order);
 		return this;
 	}
 	
 	public Serie smoothWithAverage() {
-		_smooth = new MovingAverage(_order, _serie);
+		_smooth = new MovingAverage(_serie, _order);
 		return this;
 	}
 	
@@ -66,19 +66,18 @@ public class Serie {
 		List<Double> detrend = detrend();
 		List<Double> seasonality = new ArrayList<Double>();
 		
-		for (int t = 0, i = _order / 2 + _order % 2; 
+		for (int t = 0, i = start(); 
 			     t < _order; 
-				 t++,   i =   (i + 1)  % _order ) {
+				 t++,   i = (i + 1)  % _order ) {
 			
 			double season = detrend.get(i);
 			for(int k = i + _order; k < detrend.size(); k += _order) {
 				season += detrend.get(k);
 			}
 			seasonality.add( season / (detrend.size() / _order) );
-//			seasonality.add( season / _order );
 		}
 
-		double adjustment = Statistic.sum(seasonality) / _order;
+		double adjustment = sum(seasonality) / _order;
 		List<Double> adjusted = new ArrayList<>();
 		for (Double s : seasonality) {
 			adjusted.add( op(s, adjustment) );
@@ -104,6 +103,26 @@ public class Serie {
 		return residual;
 	}
 	
+	public boolean isLastObservationAtypical() {
+		
+		List<Double> residual = residual();
+		
+		double min = mean(residual) - 3 * sd(residual);
+		double max = mean(residual) + 3 * sd(residual);
+
+		for (int i = residual.size() - start(); i < residual.size(); i++) {
+			double observation = residual.get(i); 
+			if(observation > max || observation < min) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private int start() {
+		return _order / 2 + _order % 2;
+	}
+	
 	private double op(double a, double b) {
 		return _decomposition == DECOMPOSITION.ADDITIVE
 				? a - b
@@ -114,22 +133,5 @@ public class Serie {
 		return _decomposition == DECOMPOSITION.ADDITIVE
 				? a -  b - c
 				: a / (b * c);		
-	}
-
-	public boolean isLastObservationAnomalous() {
-		
-		List<Double> residual = residual();
-		List<Double> filtered = new MovingMedian(3, residual).trend();
-		
-		double min = mean(filtered) - 3 * sd(filtered);
-		double max = mean(filtered) + 3 * sd(filtered);
-
-		for (int i = residual.size() - _order / 2; i < residual.size(); i++) {
-			double observation = residual.get(i); 
-			if(observation > max || observation < min) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

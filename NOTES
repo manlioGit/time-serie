@@ -1,12 +1,21 @@
-serie <- as.numeric(read.table("clipboard", sep =  ",", header = F))
-trend <- as.numeric(read.table("clipboard", sep =  ",", header = F))
+# copy/paste data in R console
+y <- as.numeric(read.table("clipboard", sep =  ",", header = F))
+
+# add plots to same window
+par(mfrow=c(4,1))
+
+# repeat vector
+season_rep <- rep(season, length.out=length(y))
+
+# print plot
+dev.print(png,filename="plot1.png",width=1920,height=1080)
+
 season <- c(1.1967439, 1.2769776, 1.1367740, 0.9786810, 0.6308613, 0.6486807, 1.1430001)
-season_serie <- rep(season, length.out=721)
 
 residual <- as.numeric(read.table("clipboard", sep =  ",", header = F))
 
 xtrend <-c(4:718)
-> par(mfrow=c(4,1))
+> 
 > plot(serie, type="l", col="blue")
 >  plot(xtrend,trend, type="l", col="blue")
 >  plot(season_serie, type="l", col="blue")

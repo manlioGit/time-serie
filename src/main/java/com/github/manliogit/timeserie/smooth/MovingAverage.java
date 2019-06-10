@@ -8,7 +8,7 @@ public class MovingAverage implements Smooth {
 	private final List<Double> _serie;
 	private final int _order;
 	
-	public MovingAverage(int order, List<Double> serie) {
+	public MovingAverage(List<Double> serie, int order) {
 		_serie = serie;
 		_order = order;
 	}
