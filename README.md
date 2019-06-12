@@ -42,6 +42,7 @@ An example of anomaly detection.
 				.smoothWithMedian();
 	...
 	s.anomalies();
+	
 ```
 
 creates a serie with trend calculated using moving median with order 4 (quarter data). `Serie#robust` method instructs serie in using a moving median with order 3 when detecting anomalies in residual/random component of the serie. `s.anomalies()` contains the 6 detected anomalies.
