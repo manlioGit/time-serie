@@ -23,7 +23,7 @@ public class Serie {
 	private boolean _robust;
 	
 	public Serie(List<Double> serie, int m) {
-		_serie = new ArrayList<>(serie);
+		_serie = serie;
 		_order = m;
 		_decomposition = DECOMPOSITION.ADDITIVE;
 		_smooth = new MovingAverage(serie, m);

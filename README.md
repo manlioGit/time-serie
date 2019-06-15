@@ -79,6 +79,44 @@ An example of anomaly detection.
 
 ![air passengers anomaly](img/plot-airpassengers-anomaly-detection-avg-robust.png)
 
+### anomaly detection with multiplicative decomposition and moving median
+
+From [this](https://anomaly.io/anomaly-detection-moving-median-decomposition) article. 
+
+An example of multiplicative decomposition using moving median.
+
+![web traffic decomposition](img/plot-webtraffic-decomposition-strict.png)
+
+The plot contains:
+
+* original time serie
+* trend component 
+* season component
+* residual component
+
+i.e. Y(t) = T[t] * S[t] * R[t]
+
+An example of anomaly detection.
+
+![web traffic anomaly](img/plot-webtraffic-anomaly-detection-strict.png)
+
+```java
+	List<Double> webTraffic = sList(32.0000,27.0000,...);
+	Serie serie = new Serie(webTraffic, 7)
+					.robust()
+					.multiplicative()
+					.smoothWithMedian();
+	...
+```
+
+## References:
+
+* Chance Encounters: A First Course in Data Analysis and Inference. [Ch. 14 Time Series](https://www.stat.auckland.ac.nz/~wild/ChanceEnc/Ch14.pdf)
+* Hyndman, R.J., & Athanasopoulos, G. (2018) Forecasting: principles and practice, 2nd edition, OTexts: Melbourne, Australia. OTexts.com/fpp2. Accessed on 15.06.2019 - [Ch. 6 - Time series decomposition](https://otexts.com/fpp2/decomposition.html)
+* https://anomaly.io/anomaly-detection-moving-median-decomposition
+* https://anomaly.io/seasonal-trend-decomposition-in-r
+* https://www.datavedas.com/smoothing-techniques-and-time-series-decomposition
+* https://learn.stleonards.vic.edu.au/vcefurthermaths/files/2012/07/Time-Series-Summary.pdf
 
 ## Notes:
 
