@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface Smooth {
 
-	List<Double> trend();
+    List<Double> trend();
 }

@@ -36,13 +36,13 @@ An example of anomaly detection.
 ![ausbeer anomaly](img/plot-ausbeer-median-robust.png)
 
 ```java
-	List<Double> ausBeer = asList(236.,320.,272.,....);
-	Serie s = new Serie(ausBeer, 4)
-				.robust()
-				.smoothWithMedian();
-	...
-	s.anomalies();
-	
+    List<Double> ausBeer = asList(236.,320.,272.,....);
+    Serie s = new Serie(ausBeer, 4)
+                .robust()
+                .smoothWithMedian();
+    ...
+    s.anomalies();
+    
 ```
 
 creates a serie with trend calculated using moving median with order 4 (quarter data). `Serie#robust` method instructs serie in using a moving median with order 3 when detecting anomalies in residual/random component of the serie. `s.anomalies()` contains the 6 detected anomalies.
@@ -59,11 +59,11 @@ An example of multiplicative decomposition using moving average.
 ![air passengers decomposition](img/plot-airpassengers-decomposition.png)
 
 ```java
-	List<Double> airPassengers = asList(112.,118.,132.,...);
-	Serie serie = new Serie(airPassengers, 12).multiplicative();
-	serie.trend();
-	serie.season();
-	serie.residual();
+    List<Double> airPassengers = asList(112.,118.,132.,...);
+    Serie serie = new Serie(airPassengers, 12).multiplicative();
+    serie.trend();
+    serie.season();
+    serie.residual();
 ```
 
 The plot contains:
@@ -81,7 +81,7 @@ An example of anomaly detection.
 
 ### anomaly detection with multiplicative decomposition and moving median
 
-From [this](https://anomaly.io/anomaly-detection-moving-median-decomposition) article. 
+From [this](https://anomaly.io/anomaly-detection-moving-median-decomposition) article. Note that author doesn't perform seasonal adjustment. 
 
 An example of multiplicative decomposition using moving median.
 
@@ -101,12 +101,12 @@ An example of anomaly detection.
 ![web traffic anomaly](img/plot-webtraffic-anomaly-detection-strict.png)
 
 ```java
-	List<Double> webTraffic = sList(32.0000,27.0000,...);
-	Serie serie = new Serie(webTraffic, 7)
-					.robust()
-					.multiplicative()
-					.smoothWithMedian();
-	...
+    List<Double> webTraffic = sList(32.0000,27.0000,...);
+    Serie serie = new Serie(webTraffic, 7)
+                    .robust()
+                    .multiplicative()
+                    .smoothWithMedian();
+    ...
 ```
 
 ## References:
@@ -121,9 +121,4 @@ An example of anomaly detection.
 ## Notes:
 
 * Expectations defined in unit tests were obtained using R language rounding values.
-
-
-
-
-
 
