@@ -8,7 +8,18 @@ Additive and multiplicative models are supported. Default is additive. Following
 
 ### Requires JDK 1.7+
 
-version 0.0.1, to host on maven central.
+time-serie is hosted on [Maven Central](http://search.maven.org/). 
+So you can add dependency to your pom.xml:
+
+```xml
+<dependency>
+  <groupId>com.github.manliogit</groupId>
+  <artifactId>time-serie</artifactId>
+  <version>0.0.1</version>
+</dependency>
+```
+
+for other build tools, see [the central repository](http://search.maven.org/#artifactdetails|com.github.manliogit|time-serie|0.0.1|jar) 
 
 ## Examples
 
